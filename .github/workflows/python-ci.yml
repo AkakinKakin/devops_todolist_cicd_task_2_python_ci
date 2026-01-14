@@ -26,21 +26,24 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Install dependencies
-        working-directory: ./src
+        working-directory: src
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install pytest coverage flake8
 
       - name: Run tests
-        working-directory: ./src
-        run: pytest
+        working-directory: src
+        run: |
+          python manage.py test
 
       - name: Generate coverage
-        working-directory: ./src
-        run: coverage run manage.py pytest
+        working-directory: src
+        run: |
+          coverage run manage.py test
 
       - name: Report coverage
+        working-directory: src
         run: coverage report -m
 
       - name: Check code style
@@ -48,6 +51,7 @@ jobs:
         run: flake8 . --show-source --statistics
 
       - name: Check code complexity
+        working-directory: src
         continue-on-error: true
         run: flake8 . --max-complexity=10 --statistics --exit-zero
 
